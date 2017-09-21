@@ -10,17 +10,19 @@ import com.nulabinc.zxcvbn.{Strength, Zxcvbn}
 
 class Security {
 
-  var Password:String = ""
-
   private val zxcvbn = new Zxcvbn
-  private val pass_strength:Strength = zxcvbn.measure(Password)
+  private var password:String = ""
+  private var pass_strength:Strength = _
 
-  def getStrength_Int:Double = pass_strength.getCrackTimeSeconds.getOfflineSlowHashing1e4perSecond
+  def Password:String = password
+  def Password_= (x:String) {password = x; pass_strength = zxcvbn.measure(password)}
 
-  def getCrackTime:String = pass_strength.getCrackTimesDisplay.getOfflineSlowHashing1e4perSecond
+  def getStrength_Double:Double = pass_strength.getCrackTimeSeconds.getOnlineNoThrottling10perSecond
+
+  def getCrackTime:String = pass_strength.getCrackTimesDisplay.getOnlineNoThrottling10perSecond
 
   def getFeedback:String = pass_strength.getFeedback.getWarning + ": " + pass_strength.getFeedback.getSuggestions()
 
-  def getStrength_Percent:Double = null
+  def getStrength_Percent:Double = 0
 
 }
