@@ -11,22 +11,39 @@ class StringGenerator(private val map: Map, private var weights: List[Int]) {
   for (i <- (0, map.size))
     weightedList += ((map.elements(i), weights(i)))
 
+  private def GenerateString(source: List[String], length: Int): String = {
+
+    assert(source.nonEmpty)
+
+    var answer: String = ""
+    var iterator: Int = 0
+
+    while(answer.length < length) {
+
+      if (source.size <= iterator)
+        iterator = 0
+
+      answer = answer + source(iterator)
+      iterator += 1
+
+    }
+
+    while(answer.length > length)
+      answer.drop(0)
+
+    answer
+
+  }
+
   private def AnyWeight(length: Int) : String = {
 
     val aux = weightedList.collect{case x if weightedList(x._1) != 0 => x}
     var list : List[String] = ()
-    var answer: String = ""
 
     for (elem <- aux)
       list = elem._1 :: list
 
-    for (i <- (0, math.ceil(length/map.groupSize)))
-      answer += list(i)
-
-    while (answer.length > length)
-      answer.drop(0)
-
-    answer
+    GenerateString(list, length)
 
   }
 
@@ -34,18 +51,11 @@ class StringGenerator(private val map: Map, private var weights: List[Int]) {
 
     val aux = weightedList.collect{case x if weightedList(x._1) == 0 => x}
     var list : List[String] = ()
-    var answer: String = ""
 
     for (elem <- aux)
       list = elem._1 :: list
 
-    for (i <- (0, math.ceil(length/map.groupSize)))
-      answer += list(i)
-
-    while (answer.length > length)
-      answer.drop(0)
-
-    answer
+    GenerateString(list, length)
 
   }
 
