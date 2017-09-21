@@ -1,5 +1,4 @@
 *.class
 *.log
 dir_to_ignore/.idea
-dir_to_ignore/project
 dir_to_ignore/target
