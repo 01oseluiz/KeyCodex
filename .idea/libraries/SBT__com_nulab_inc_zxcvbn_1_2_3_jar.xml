@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="SBT: com.nulab-inc:zxcvbn:1.2.3:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.nulab-inc/zxcvbn/jars/zxcvbn-1.2.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.nulab-inc/zxcvbn/srcs/zxcvbn-1.2.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
