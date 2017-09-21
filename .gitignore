@@ -1,4 +1,4 @@
 *.class
 *.log
-dir_to_ignore/.idea
-dir_to_ignore/target
+.idea/*
+target/*
