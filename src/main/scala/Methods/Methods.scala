@@ -1,0 +1,5 @@
+package Methods
+
+class Methods {
+
+}
