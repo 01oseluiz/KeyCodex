@@ -1,17 +1,38 @@
 package Methods
 
-import Map.Map
+import Map.{Group, Map}
 
-import scala.collection.mutable
+class StringGenerator(private val current_map: Map, private var password: String, private var length: Int) {
 
-class StringGenerator(private val map: Map, private var weights: List[Int]) {
+  assert(length > 0)
 
-  private val weightedList: mutable.Map[String, Int] = ()
+  private val weightedList: List[Group] = current_map.getWeightedMap(password)
 
-  for (i <- (0, map.size))
-    weightedList += ((map.elements(i), weights(i)))
+  private def FilterList(condition: (Group) => Boolean): List[String] = {
 
-  private def GenerateString(source: List[String], length: Int): String = {
+    val aux = weightedList.filter(x => condition(x))
+    var list : List[String] = ()
+
+    for (elem <- aux)
+      list = elem.characters :: list
+
+    list
+
+  }
+
+  private def SortList(condition: (Group, Group) => Boolean): List[String] = {
+
+    val aux = weightedList.sortWith((x, y) => condition(x, y))
+    var list : List[String] = ()
+
+    for (elem <- aux)
+      list = elem.characters :: list
+
+    list
+
+  }
+
+  private def BuildString(source: List[String]): String = {
 
     assert(source.nonEmpty)
 
@@ -29,34 +50,17 @@ class StringGenerator(private val map: Map, private var weights: List[Int]) {
     }
 
     while(answer.length > length)
-      answer.drop(0)
+      answer.drop(answer.length()-1)
 
     answer
 
   }
 
-  private def AnyWeight(length: Int) : String = {
-
-    val aux = weightedList.collect{case x if weightedList(x._1) != 0 => x}
-    var list : List[String] = ()
-
-    for (elem <- aux)
-      list = elem._1 :: list
-
-    GenerateString(list, length)
-
-  }
-
-  private def NotWeighted(length: Int) : String = {
-
-    val aux = weightedList.collect{case x if weightedList(x._1) == 0 => x}
-    var list : List[String] = ()
-
-    for (elem <- aux)
-      list = elem._1 :: list
-
-    GenerateString(list, length)
-
-  }
+  private def AnyWeight(length: Int): String = BuildString(FilterList(x => x.weight != 0))
+  private def LeastWeighted(length: Int): String = BuildString(SortList((x, y) => x.weight < y.weight))
+  private def MostWeighted(length: Int): String = BuildString(SortList((x, y) => x.weight > y.weight))
+  private def NoFilter(lenght: Int): String = BuildString(FilterList(x => true))
+  private def NotWeighted(length: Int): String = BuildString(FilterList(x => x.weight == 0))
+  private def ReverseOrder(length: Int): String = BuildString(FilterList(x => true).reverse)
 
 }
