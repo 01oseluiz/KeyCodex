@@ -1,30 +1,42 @@
 package Map
 
-import scala.collection.{immutable, mutable}
 import scala.collection.mutable._
-import scala.io.Source
-import scala.io.StdIn._
-/**
-  TODO Criar lista de pesos seguindo a indexação do mapa
-  TODO Criar método getWeights()
- */
+import scala.util.Random
+import scala.math
 
-case class Cell(characters: List[String])
-case class Group(characters: List[String], weight: Int)
+case class Group(var characters: String, var weight: Int)
 
-class Map (){
-   private val elements : List[Group] = List.empty
-   private val index : HashMap[String, List[Int]] = setMapIndexes()
+class Map () {
+  //Attributes
+  private val index: HashMap[String, List[Int]] = setMapIndexes()
+  private val elements: List[Group] = fillMap()
 
-  def getGroupSize : Int = {
-    elements.head.characters.size
+  //Methods
+  def getGroupSize(groupIndex: Int): Int = elements(groupIndex).characters.length
+
+  private def inBounds(elementsIndex: Int, groupIndex: Int) : Boolean = {
+    if (elementsIndex < 68 && groupIndex < 4)
+      true
+    else
+      false
   }
 
-  def getIndex(key: String) : Option[List[Int]] = index.get(key)
-  //def getWeightedMap(password : String) : List[Group]
+  def getWeightedMap(password : String) : List[Group] = {
+    var hashIndex : Option[List[Int]]  = Option{List()}
+    var matches : List[Int] = List()
+
+    for(i <- password.indices){
+      hashIndex = getIndex(password(i).toString)
+      matches = hashIndex.get
+      for (k <- matches.indices){
+        elements(matches(k)).weight *= 2
+      }
+    }
+    elements
+  }
 
   private def setMapIndexes(): HashMap[String, List[Int]] = {
-    val mapIndexes : HashMap[String, List[Int]] = HashMap.empty
+    val mapIndexes: HashMap[String, List[Int]] = HashMap.empty
 
     mapIndexes.put("A", List(0, 1, 11, 18, 19, 20, 21, 23, 31, 41, 42, 48, 56, 60, 66, 68, 70, 71))
     mapIndexes.put("B", List(1, 10, 18, 22, 23, 24, 30, 31, 37, 38, 39, 42, 47, 56, 57, 59, 60, 66, 67, 68))
@@ -66,8 +78,32 @@ class Map (){
     mapIndexes
   }
 
-  protected def fillMap(chars : List[Cell]): Unit = {
+  private def fillMap(): List[Group] = {
+    var tempMap = new ListBuffer[Group]()
+    var element : String = ""
 
+    for (i <- 0 until 72){
+      for(k <- 0 until 4){
+        element += Random.nextPrintableChar()
+      }
+      tempMap += Group(element, 1)
+      element = ""
+    }
+
+    val middleGroup = tempMap(65).characters
+    tempMap(68).characters = middleGroup
+    tempMap(70).characters = middleGroup
+    tempMap(71).characters = middleGroup
+
+    tempMap.toList
+  }
+
+  def getIndex(key: String): Option[List[Int]] = index.get(key)
+
+  def printMap(): Unit = {
+    for(i <-elements.indices){
+      println("Cell "+i+": "+elements(i).characters+"\n")
+    }
   }
 }
 
