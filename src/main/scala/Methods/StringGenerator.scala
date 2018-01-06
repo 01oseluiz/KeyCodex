@@ -11,7 +11,7 @@ class StringGenerator(private val current_map: Map, private var password: String
   private def FilterList(condition: (Group) => Boolean): List[String] = {
 
     val aux = weightedList.filter(x => condition(x))
-    var list : List[String] = ()
+    var list : List[String] = List()
 
     for (elem <- aux)
       list = elem.characters :: list
@@ -23,7 +23,7 @@ class StringGenerator(private val current_map: Map, private var password: String
   private def SortList(condition: (Group, Group) => Boolean): List[String] = {
 
     val aux = weightedList.sortWith((x, y) => condition(x, y))
-    var list : List[String] = ()
+    var list : List[String] = List()
 
     for (elem <- aux)
       list = elem.characters :: list
@@ -41,7 +41,7 @@ class StringGenerator(private val current_map: Map, private var password: String
 
     while(answer.length < length) {
 
-      if (source.size <= iterator)
+      if (source.lengthCompare(iterator) <= 0)
         iterator = 0
 
       answer = answer + source(iterator)
