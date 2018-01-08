@@ -11,69 +11,38 @@ import Map.{Group, Map}
  */
 
 /*
- * A classe StringGenerator tem o intuito de receber um mapa de senha, uma senha inicial e um tamanho desejado de
- * senha. Utilizando a senha inicial no mapa de senha fornecido, a classe gera uma lista de possíveis senhas com o
- * tamanho fornecido.
+ * A classe PWDGenerator é construída para gerar as senhas do progama a partir de em um Map fornecido.
  */
 
-class PWDGen(current_map: Map, initial_input: String) {
+class PWDGen(current_map: Map) {
 
-  // Atributos.
+  private val availableMethods: List[List[Group] => String] = List(AnyWeight, LeastWeighted, MostWeighted,
+    NoFilter, NotWeighted, ReverseOrder)
 
-  // Lista de grupos fornecida pela senha inicial.
+  private def FilterGroupList(groups: List[Group], condition: (Group) => Boolean): List[String] =
+    groups.filter(x => condition(x)).map(x => x.characters)
 
-  private val weightedList: List[Group] = current_map.getWeightedMap(initial_input)
-
-  // Lista com os métodos de geração de senha disponíveis.
-
-  private val availableMethods: List[() => List[String]] = List(AnyWeight, LeastWeighted, MostWeighted, NoFilter,
-                                                           NotWeighted, ReverseOrder)
-
-  // Métodos.
-
-  // Método para filtrar a lista de grupos com uma condição, retornando a lista de strings dos grupos restantes.
-
-  private def FilterList(condition: (Group) => Boolean): List[String] = {
-
-    val aux = weightedList.filter(x => condition(x))
-    val list : List[String] = aux.map(x => x.characters)
-
-    list
-
-  }
-
-  // Método para organizar a lista de grupos com uma condição, retornando a lista de strings dos grupos em ordem.
-
-  private def SortList(condition: (Group, Group) => Boolean): List[String] = {
-
-    val aux = weightedList.sortWith((x, y) => condition(x, y))
-    val list : List[String] = aux.map(x => x.characters)
-
-    list
-
-  }
+  private def SortGroupList(groups: List[Group], condition: (Group, Group) => Boolean): List[String] =
+    groups.sortWith((x, y) => condition(x, y)).map(x => x.characters)
 
   // Método para construir uma senha a partir de uma lista de strings e do tamanho especificado.
 
-  private def SizePWD(source: List[String], length: Int): String = {
+  private def TruncatePWD(original: String, desired_length: Int): String = {
 
-    assert(source.nonEmpty)
+    assert(original.length > 0)
 
     var answer: String = ""
     var iterator: Int = 0
 
-    while(answer.length < length) {
+    while(answer.length < desired_length) {
 
-      if (source.lengthCompare(iterator) <= 0)
+      if (original.lengthCompare(iterator) <= 0)
         iterator = 0
 
-      answer = answer + source(iterator)
+      answer = answer + original(iterator)
       iterator += 1
 
     }
-
-    while(answer.length > length)
-      answer.drop(answer.length()-1)
 
     answer
 
@@ -81,27 +50,38 @@ class PWDGen(current_map: Map, initial_input: String) {
 
   // Métodos de geração de senha.
 
-  private def AnyWeight() : List[String] = FilterList(x => x.weight != 0)
-  private def LeastWeighted(): List[String] = SortList((x, y) => x.weight < y.weight)
-  private def MostWeighted(): List[String] = SortList((x, y) => x.weight > y.weight)
-  private def NoFilter(): List[String] = FilterList(x => true)
-  private def NotWeighted(): List[String] = FilterList(x => x.weight == 0)
-  private def ReverseOrder(): List[String] = weightedList.map(x => x.characters).reverse
+  private def AnyWeight(groups: List[Group]) : String = FilterGroupList(groups, x => x.weight != 0).mkString("")
+  private def LeastWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight < y.weight)
+    .mkString("")
+  private def MostWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight > y.weight)
+    .mkString("")
+  private def NoFilter(groups: List[Group]): String = FilterGroupList(groups, x => true).mkString("")
+  private def NotWeighted(groups: List[Group]): String = FilterGroupList(groups, x => x.weight == 0).mkString("")
+  private def ReverseOrder(groups: List[Group]): String = groups.map(x => x.characters).reverse.mkString("")
 
-  // Método para gerar lista de senhas recomendadas.
+  def Generate(initial_input: String, length: Int): List[String] = {
 
-  def Generate(length: Int): List[String] = {
+    // O tamanho do input inicial e da senha desejada devem ser maiores que 0.
 
-    // O tamanho da senha deve ser maior que 0.
-
+    assert(initial_input.length > 0)
     assert(length > 0)
 
-    var aux: List[String] = List()
+    // Obtém-se a lista de grupos utilizando-se o input inicial e o mapa da classe PWDGen.
 
-    for (method <- availableMethods)
-      aux = SizePWD(method(), length) :: aux
+    val groups: List[Group] = current_map.getWeightedMap(initial_input)
 
-    aux
+    /*
+     * Primeiro, a lista de grupos obtidas com o input inicial_input fornecido é mapeada como argumento de todos os
+     * métodos existentes de geração de senha.
+     *
+     * Depois, mapeia-se a cada senha obtida pelos métodos de geração de senha como argumento do método TruncatePWD
+     * junto com o input lenght, para se obter uma lista com senhas do tamanho length, chamada possiblePWDs.
+     *
+     */
+
+    val possiblePWDs = availableMethods.map(x => x(groups)).map(y => TruncatePWD(y, length))
+
+    possiblePWDs
 
   }
 
