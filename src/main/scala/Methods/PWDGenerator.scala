@@ -14,7 +14,7 @@ import Map.{Group, Map}
  * A classe PWDGenerator é construída para gerar as senhas do progama a partir de em um Map fornecido.
  */
 
-class PWDGen(current_map: Map) {
+class PWDGenerator(current_map: Map) {
 
   private val availableMethods: List[List[Group] => String] = List(AnyWeight, LeastWeighted, MostWeighted,
     NoFilter, NotWeighted, ReverseOrder)
