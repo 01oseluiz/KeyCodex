@@ -2,9 +2,6 @@ package Map
 
 import scala.collection.mutable._
 import scala.util.Random
-import scala.math
-
-case class Group(var characters: String, var weight: Int)
 
 class Map () {
   //Attributes

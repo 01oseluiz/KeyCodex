@@ -1,6 +1,7 @@
 package Methods
 
 import Map.{Group, Map}
+import Methods.PWDGenMethods.availableMethods
 
 /*TODO list:
 
@@ -16,16 +17,7 @@ import Map.{Group, Map}
 
 class PWDGenerator(current_map: Map) {
 
-  private val availableMethods: List[List[Group] => String] = List(AnyWeight, LeastWeighted, MostWeighted,
-    NoFilter, NotWeighted, ReverseOrder)
-
-  private def FilterGroupList(groups: List[Group], condition: (Group) => Boolean): List[String] =
-    groups.filter(x => condition(x)).map(x => x.characters)
-
-  private def SortGroupList(groups: List[Group], condition: (Group, Group) => Boolean): List[String] =
-    groups.sortWith((x, y) => condition(x, y)).map(x => x.characters)
-
-  // Método para construir uma senha a partir de uma lista de strings e do tamanho especificado.
+  // Método para truncar uma senha a partir de uma senha original fornecida e um tamanho desejado.
 
   private def TruncatePWD(original: String, desired_length: Int): String = {
 
@@ -48,16 +40,7 @@ class PWDGenerator(current_map: Map) {
 
   }
 
-  // Métodos de geração de senha.
-
-  private def AnyWeight(groups: List[Group]) : String = FilterGroupList(groups, x => x.weight != 0).mkString("")
-  private def LeastWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight < y.weight)
-    .mkString("")
-  private def MostWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight > y.weight)
-    .mkString("")
-  private def NoFilter(groups: List[Group]): String = FilterGroupList(groups, x => true).mkString("")
-  private def NotWeighted(groups: List[Group]): String = FilterGroupList(groups, x => x.weight == 0).mkString("")
-  private def ReverseOrder(groups: List[Group]): String = groups.map(x => x.characters).reverse.mkString("")
+  // Método para gerar uma senha a partir de uma string de input e de um tamanho desejado.
 
   def Generate(initial_input: String, length: Int): List[String] = {
 
@@ -79,7 +62,9 @@ class PWDGenerator(current_map: Map) {
      *
      */
 
-    val possiblePWDs = availableMethods.map(x => x(groups)).map(y => TruncatePWD(y, length))
+    val possiblePWDs = availableMethods.map(x => x(groups))
+
+    possiblePWDs.map(y => TruncatePWD(y, length))
 
     possiblePWDs
 
