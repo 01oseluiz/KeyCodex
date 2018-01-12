@@ -1,5 +1,0 @@
-package Security
-
-class Security {
-
-}
