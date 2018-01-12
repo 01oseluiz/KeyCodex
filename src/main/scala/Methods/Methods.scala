@@ -1,5 +1,0 @@
-package Methods
-
-class Methods {
-
-}
