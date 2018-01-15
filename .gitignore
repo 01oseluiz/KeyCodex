@@ -1,10 +1,4 @@
 *.class
 *.log
-
-
-
-
-
 .idea/*
 target/*
-
