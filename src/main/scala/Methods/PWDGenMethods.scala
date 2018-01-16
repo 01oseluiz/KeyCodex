@@ -9,11 +9,15 @@ import Methods.GroupsManipulation.{FilterGroupList, SortGroupList}
 
 object PWDGenMethods {
 
-  val availableMethods: List[List[Group] => String] = List(AnyWeight, LeastWeighted, MostWeighted,
-    NoFilter, NotWeighted, ReverseOrder)
+  val availableMethods: List[List[Group] => String] = List(AnyWeight, LeastStrikes, LeastWeighted, MostStrikes,
+    MostWeighted, NoFilter, NotWeighted, ReverseOrder)
 
   def AnyWeight(groups: List[Group]) : String = FilterGroupList(groups, x => x.weight != 0).mkString("")
+  def LeastStrikes(groups: List[Group]): String = SortGroupList(groups,
+    (x, y) => BinaryOps.CountOnes(x.weight) < BinaryOps.CountOnes(y.weight)).mkString("")
   def LeastWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight < y.weight).mkString("")
+  def MostStrikes(groups: List[Group]): String = SortGroupList(groups,
+    (x, y) => BinaryOps.CountOnes(x.weight) > BinaryOps.CountOnes(y.weight)).mkString("")
   def MostWeighted(groups: List[Group]): String = SortGroupList(groups, (x, y) => x.weight > y.weight).mkString("")
   def NoFilter(groups: List[Group]): String = FilterGroupList(groups, x => true).mkString("")
   def NotWeighted(groups: List[Group]): String = FilterGroupList(groups, x => x.weight == 0).mkString("")
