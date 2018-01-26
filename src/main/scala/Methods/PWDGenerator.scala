@@ -2,6 +2,7 @@ package Methods
 
 import Map.{Group, Map}
 import Methods.PWDGenMethods.availableMethods
+import Security.{KeysSecurity, SingleKeySecurity}
 
 /*TODO list:
 
@@ -21,7 +22,7 @@ class PWDGenerator(current_map: Map) {
 
   private def TruncatePWD(original: String, desired_length: Int): String = {
 
-    assert(original.length > 0)
+    if (original.length <= 0) return ""
 
     var answer: String = ""
     var iterator: Int = 0
@@ -42,7 +43,7 @@ class PWDGenerator(current_map: Map) {
 
   // Método para gerar uma senha a partir de uma string de input e de um tamanho desejado.
 
-  def Generate(initial_input: String, length: Int): List[String] = {
+  def Generate(initial_input: String, length: Int): SingleKeySecurity = {
 
     // O tamanho do input inicial e da senha desejada devem ser maiores que 0.
 
@@ -63,11 +64,16 @@ class PWDGenerator(current_map: Map) {
      */
 
     val possiblePWDs = availableMethods.map(x => x(groups))
+    var possiblePWDsTruncate:List[String] = List.empty
 
-    possiblePWDs.map(y => TruncatePWD(y, length))
+    possiblePWDs.foreach(y => possiblePWDsTruncate :+= TruncatePWD(y, length))
 
-    possiblePWDs
 
+    println("\n----Senhas Geradas-----")
+    possiblePWDsTruncate.foreach(println)
+    println("-----------------------\n")
+
+    KeysSecurity.bestKey(possiblePWDsTruncate)
   }
 
 }

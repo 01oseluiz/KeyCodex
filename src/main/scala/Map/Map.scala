@@ -23,7 +23,7 @@ class Map () {
     var matches : List[Int] = List()
 
     for(i <- password.indices){
-      hashIndex = getIndex(password(i).toString)
+      hashIndex = getIndex(password(i).toString.toUpperCase)
       matches = hashIndex.get
       for (k <- matches.indices){
         elements(matches(k)).weight *= 2
@@ -75,16 +75,13 @@ class Map () {
     mapIndexes
   }
 
+  //TODO - Criar novo Mapa e Carregar Mapa
+
   private def fillMap(): List[Group] = {
     var tempMap = new ListBuffer[Group]()
-    var element : String = ""
 
     for (i <- 0 until 72){
-      for(k <- 0 until 4){
-        element += Random.nextPrintableChar()
-      }
-      tempMap += Group(element, 1)
-      element = ""
+      tempMap += Group((33+i).toChar.toString, 1)
     }
 
     val middleGroup = tempMap(65).characters
@@ -99,7 +96,7 @@ class Map () {
 
   def printMap(): Unit = {
     for(i <-elements.indices){
-      println("Cell "+i+": "+elements(i).characters+"\n")
+      println("Cell "+i+": "+elements(i).characters+ "| Peso: "+elements(i).weight+"\n")
     }
   }
 }
