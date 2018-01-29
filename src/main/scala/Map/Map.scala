@@ -26,7 +26,7 @@ class Map () {
       hashIndex = getIndex(password(i).toString.toUpperCase)
       matches = hashIndex.get
       for (k <- matches.indices){
-        elements(matches(k)).weight *= 2
+        elements(matches(k)).weight += 2^i
       }
     }
     elements
@@ -81,7 +81,7 @@ class Map () {
     var tempMap = new ListBuffer[Group]()
 
     for (i <- 0 until 72){
-      tempMap += Group((33+i).toChar.toString, 1)
+      tempMap += Group((33+i).toChar.toString, 0)
     }
 
     val middleGroup = tempMap(65).characters
