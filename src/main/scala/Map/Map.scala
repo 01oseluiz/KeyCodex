@@ -1,32 +1,36 @@
 package Map
 
-import scala.collection.mutable._
-import scala.util.Random
+import java.io.{BufferedWriter, File, FileWriter}
 
-class Map () {
+import scala.collection.mutable._
+import scala.io.Source.fromFile
+
+class Map() {
   //Attributes
   private val index: HashMap[String, List[Int]] = setMapIndexes()
-  private val elements: List[Group] = fillMap()
+  private var elements: List[Group] = fillMap()
 
   //Methods
   def getGroupSize(groupIndex: Int): Int = elements(groupIndex).characters.length
 
-  private def inBounds(elementsIndex: Int, groupIndex: Int) : Boolean = {
+  private def inBounds(elementsIndex: Int, groupIndex: Int): Boolean = {
     if (elementsIndex < 68 && groupIndex < 4)
       true
     else
       false
   }
 
-  def getWeightedMap(password : String) : List[Group] = {
-    var hashIndex : Option[List[Int]]  = Option{List()}
-    var matches : List[Int] = List()
+  def getWeightedMap(password: String): List[Group] = {
+    var hashIndex: Option[List[Int]] = Option {
+      List()
+    }
+    var matches: List[Int] = List()
 
-    for(i <- password.indices){
+    for (i <- password.indices) {
       hashIndex = getIndex(password(i).toString.toUpperCase)
       matches = hashIndex.get
-      for (k <- matches.indices){
-        elements(matches(k)).weight += 2^i
+      for (k <- matches.indices) {
+        elements(matches(k)).weight += 2 ^ i
       }
     }
     elements
@@ -75,13 +79,13 @@ class Map () {
     mapIndexes
   }
 
-  //TODO - Criar novo Mapa e Carregar Mapa
+  //TODO - Criar novo Mapa e carregar mapata - todos incriptados
 
   private def fillMap(): List[Group] = {
     var tempMap = new ListBuffer[Group]()
 
-    for (i <- 0 until 72){
-      tempMap += Group((33+i).toChar.toString, 0)
+    for (i <- 0 until 72) {
+      tempMap += Group((33 + i).toChar.toString, 0)
     }
 
     val middleGroup = tempMap(65).characters
@@ -92,11 +96,69 @@ class Map () {
     tempMap.toList
   }
 
+  def fillMapWithLoad(name_file: String): Unit = {
+    try {
+      var tempMap = new ListBuffer[Group]()
+      val textFile = fromFile(name_file) // Atencao ao local onde será buscado o arquivo
+      var count = 0
+
+      textFile.getLines().foreach { word =>
+        tempMap += Group(word.toString, 0)
+        count += 1
+      }
+
+      if (count != 72){
+        println("Erro no arquivo")
+        return
+      }
+
+      elements = tempMap.toList
+    } catch {
+      case _: Exception => println("Erro ao preencher o mapa"); elements = fillMap()
+    }
+  }
+
+  def createFillMap(listWords: List[String], nameMap: String): Boolean = {
+
+    if (listWords.size != 69) return false //Map não pode ser criado
+
+    try {
+      val file = new File(nameMap)
+
+      if (file.exists()) {
+        println("Arquivo ja existente")
+        return false //Map não pode ser criado
+      }
+
+      file.createNewFile()
+
+      val fw = new FileWriter(file.getAbsoluteFile)
+      val bw = new BufferedWriter(fw)
+
+      for (i <- 0 to 67) {
+        bw.write(listWords(i) + "\n")
+      }
+
+      // Grava grupo do meio e grupo 69
+      bw.write(listWords(65) + "\n") //grava posição 68
+      bw.write(listWords(68) + "\n") //grava posição 69
+      bw.write(listWords(65) + "\n") //grava posição 70
+      bw.write(listWords(65)) //grava posição 71
+
+      bw.close()
+
+      true //Map criado com sucesso
+
+    } catch {
+      case _: Exception => println("Erro ao criar o mapa"); false //Map não pode ser criado
+    }
+  }
+
   def getIndex(key: String): Option[List[Int]] = index.get(key)
 
   def printMap(): Unit = {
-    for(i <-elements.indices){
-      println("Cell "+i+": "+elements(i).characters+ "| Peso: "+elements(i).weight+"\n")
+    for (i <- elements.indices) {
+      println("Cell " + i + ": " + elements(i).characters + "| Peso: " + elements(i).weight + "\n")
     }
   }
 }

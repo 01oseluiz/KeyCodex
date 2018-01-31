@@ -27,7 +27,7 @@ class PWDGenerator(current_map: Map) {
     var answer: String = ""
     var iterator: Int = 0
 
-    while(answer.length < desired_length) {
+    while (answer.length < desired_length) {
 
       if (original.lengthCompare(iterator) <= 0)
         iterator = 0
@@ -64,14 +64,17 @@ class PWDGenerator(current_map: Map) {
      */
 
     val possiblePWDs = availableMethods.map(x => x(groups))
-    var possiblePWDsTruncate:List[String] = List.empty
+    var possiblePWDsTruncate: List[String] = List.empty
 
     possiblePWDs.foreach(y => possiblePWDsTruncate :+= TruncatePWD(y, length))
 
 
-    println("\n----Senhas Geradas-----")
+    // Exibir todas as senhas geradas
+    /*println("\n----Senhas Geradas-----")
     possiblePWDsTruncate.foreach(println)
     println("-----------------------\n")
+    */
+
 
     KeysSecurity.bestKey(possiblePWDsTruncate)
   }
