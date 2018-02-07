@@ -1,4 +1,6 @@
+import Map.Group
 import Methods.BinaryOps
+import Methods.GroupsManipulation.IntersperseGroupLists
 import org.scalatest.{FunSuite, Matchers}
 
 class MiscTest extends FunSuite {
@@ -29,6 +31,33 @@ class MiscTest extends FunSuite {
       case a: AssertionError => succeed
       case _: Throwable => fail()
     }
+
+  }
+
+  test("IntersperseGroupLists: Different sizes 1.") {
+
+    val TestList1 : List[Group] = List(Group("abcd", 0), Group("efgh", 0))
+    val TestList2 : List[Group] = List(Group("uvwx", 2), Group("yz01", 0), Group("2345", 3), Group("6789", 1))
+
+    assert(IntersperseGroupLists(TestList1, TestList2) == List("abcd", "uvwx", "efgh", "yz01", "2345", "6789"))
+
+  }
+
+  test("IntersperseGroupLists: Different sizes 2.") {
+
+    val TestList1 : List[Group] = List(Group("abcd", 0), Group("efgh", 0), Group("2345", 3), Group("6789", 1))
+    val TestList2 : List[Group] = List(Group("uvwx", 2), Group("yz01", 0))
+
+    assert(IntersperseGroupLists(TestList1, TestList2) == List("abcd", "uvwx", "efgh", "yz01", "2345", "6789"))
+
+  }
+
+  test("IntersperseGroupLists: Equal sizes.") {
+
+    val TestList1 : List[Group] = List(Group("abcd", 0), Group("efgh", 0))
+    val TestList2 : List[Group] = List(Group("uvwx", 2), Group("yz01", 0))
+
+    assert(IntersperseGroupLists(TestList1, TestList2) == List("abcd", "uvwx", "efgh", "yz01"))
 
   }
 

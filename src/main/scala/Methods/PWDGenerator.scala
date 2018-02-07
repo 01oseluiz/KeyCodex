@@ -6,10 +6,6 @@ import Security.{KeysSecurity, SingleKeySecurity}
 
 /*TODO list:
 
-    TODO Most marked spaces method.
-    TODO Most weighted spaces method.
-    TODO Integrate this class with Security Class.
-
  */
 
 /*
@@ -64,10 +60,10 @@ class PWDGenerator(current_map: Map) {
      */
 
     val possiblePWDs = availableMethods.map(x => x(groups))
+
     var possiblePWDsTruncate: List[String] = List.empty
 
     possiblePWDs.foreach(y => possiblePWDsTruncate :+= TruncatePWD(y, length))
-
 
     // Exibir todas as senhas geradas
     /*println("\n----Senhas Geradas-----")
@@ -75,8 +71,8 @@ class PWDGenerator(current_map: Map) {
     println("-----------------------\n")
     */
 
-
     KeysSecurity.bestKey(possiblePWDsTruncate)
+
   }
 
 }
