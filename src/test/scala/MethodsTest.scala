@@ -94,4 +94,13 @@ class MethodsTest extends FunSuite {
 
   }
 
+  test("Weight_NoWeight method.") {
+
+    val TestList : List[Group] = List(Group("abcd", 0), Group("efgh", 0), Group("ijkl", 1), Group("mnop", 4),
+      Group("qrst", 1), Group("uvwx", 2), Group("yz01", 0), Group("2345", 3), Group("6789", 1))
+
+    assert(Weight_NoWeight(TestList) == "ijklabcdmnopefghqrstyz01uvwx23456789")
+
+  }
+
 }

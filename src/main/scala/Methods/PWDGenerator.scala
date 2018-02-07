@@ -6,8 +6,6 @@ import Security.{KeysSecurity, SingleKeySecurity}
 
 /*TODO list:
 
-    TODO Create GroupsManipulation based on intercalation.
-
  */
 
 /*
